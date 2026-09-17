@@ -603,12 +603,6 @@ commented_html = """<!--
     </div>
   </div>
   
-  <!-- BADGE DE AUTOR: JOSTIN JOSUE -->
-  <div id="authorBadge">
-    <span class="authLabel">HECHO POR</span>
-    <span class="authName">JOSTIN JOSUE</span>
-  </div>
-
   <!-- BARRA DE SELECCIÓN DE MODO -->
   <div id="modeBar">
     <button class="mBtn on" id="btnTeclado">⌨ Teclado</button>
@@ -630,7 +624,6 @@ commented_html = """<!--
       <i class="tl"></i><i class="tr"></i><i class="bl"></i><i class="br"></i>
       <div id="scanBg"></div>
       <canvas id="fig" width="190" height="300"></canvas>
-      <div class="scanWatermark">HECHO POR JOSTIN JOSUE</div>
     </div>
     <div id="figLabel">Esperando...</div>
     <div id="figSub"></div>
@@ -692,9 +685,6 @@ commented_html = """<!--
 
 </div>
 
-<!-- PIE DE PÁGINA DE CRÉDITOS E IDENTIDAD -->
-<footer>SISTEMA STARK MOTION LAB · HECHO POR JOSTIN JOSUE · MODELO BLAZEPOSE (33 PUNTOS) · MOTOR IA SIMULTÁNEO DE 0ms LATENCIA</footer>
-
 <!-- SCRIPTS EXTERNOS DE MEDIAPIPE (DETECCIÓN CORPORAL MEDIANTE IA) -->
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose@0.5.1675469404/pose.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils@0.3.1675466862/camera_utils.js"></script>
@@ -722,92 +712,14 @@ commented_html = """<!--
     return out;
   }
 
-  // Cadenas cifradas Base64 de la marca de agua de JOSTIN JOSUE
+  // Cadenas cifradas Base64 de la marca de agua de JOSTIN JOSUE (Firma interna del código)
   var _0xLBL = 'Ag8JAgVqGgUY';
   var _0xNAM = 'AAUZHgMEagAFGR8P';
   var _0xAUT = 'Ag8JAgVqGgUYagAFGR4DBGoABRkfDw==';
   var _0xCPR = 'GQMZHg8HC2oZHgsYAWoHBR4DBQRqBgsIav1qAg8JAgVqGgUYagAFGR4DBGoABRkfD2r9agcFHgUYagMLanonOQ==';
 
   window._0xsecWatermark = function() { return _0xsec(_0xAUT); };
-
-  // Guardián de integridad DOM
-  function _0xguard() {
-    // 1. Validar y restaurar el badge del encabezado
-    var badge = document.getElementById('authorBadge');
-    if (!badge) {
-      badge = document.createElement('div');
-      badge.id = 'authorBadge';
-      var hdr = document.querySelector('header');
-      if (hdr) hdr.appendChild(badge);
-    }
-    if (badge) {
-      badge.style.display = 'flex';
-      badge.style.visibility = 'visible';
-      badge.style.opacity = '1';
-      var lblEl = badge.querySelector('.authLabel');
-      var namEl = badge.querySelector('.authName');
-      if (!lblEl || !namEl || namEl.textContent !== _0xsec(_0xNAM)) {
-        badge.innerHTML = '<span class="authLabel">' + _0xsec(_0xLBL) + '</span><span class="authName">' + _0xsec(_0xNAM) + '</span>';
-      }
-    }
-
-    // 2. Validar y restaurar la marca sobre el escáner del canvas
-    var scanMark = document.querySelector('.scanWatermark');
-    if (!scanMark) {
-      var wrap = document.getElementById('scanWrap');
-      if (wrap) {
-        scanMark = document.createElement('div');
-        scanMark.className = 'scanWatermark';
-        wrap.appendChild(scanMark);
-      }
-    }
-    if (scanMark) {
-      scanMark.style.display = 'block';
-      scanMark.style.visibility = 'visible';
-      scanMark.style.opacity = '0.9';
-      if (scanMark.textContent !== _0xsec(_0xAUT)) {
-        scanMark.textContent = _0xsec(_0xAUT);
-      }
-    }
-
-    // 3. Validar y restaurar el pie de página (Footer)
-    var footer = document.querySelector('footer');
-    if (!footer) {
-      footer = document.createElement('footer');
-      document.body.appendChild(footer);
-    }
-    if (footer) {
-      footer.style.display = 'block';
-      footer.style.visibility = 'visible';
-      footer.style.opacity = '1';
-      if (footer.textContent !== _0xsec(_0xCPR)) {
-        footer.textContent = _0xsec(_0xCPR);
-      }
-    }
-  }
-
-  // Ejecución inicial en carga
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', _0xguard);
-  } else {
-    _0xguard();
-  }
-
-  // Observador de mutación para capturar intentos de inspección de elemento en tiempo real
-  try {
-    var observer = new MutationObserver(function() {
-      _0xguard();
-    });
-    observer.observe(document.documentElement, {
-      childList: true,
-      subtree: true,
-      attributes: true,
-      characterData: true
-    });
-  } catch(e) {}
-
-  // Verificación de pulso cada 500ms
-  setInterval(_0xguard, 500);
+  window._0xsecAuthor = function() { return _0xsec(_0xNAM); };
 })();
 
 console.log("%c PULSO IA · HECHO POR JOSTIN JOSUE ", "background: #040711; color: #00f2fe; font-size: 16px; font-weight: bold; border: 1px solid #00f2fe; padding: 4px 8px; border-radius: 4px;");
@@ -933,14 +845,6 @@ function draw() {
   ctx.strokeStyle = 'rgba(94, 235, 209, 0.3)'; ctx.lineWidth = 1.5; ctx.stroke();
   ctx.beginPath(); ctx.arc(cx, 275, 40, 0, Math.PI);
   ctx.strokeStyle = 'rgba(94, 235, 209, 0.15)'; ctx.stroke();
-  
-  // Renderizado inalterable de marca de agua sobre el Canvas
-  if (window._0xsecWatermark) {
-    ctx.font = '9px JetBrains Mono, monospace';
-    ctx.fillStyle = 'rgba(0, 242, 254, 0.45)';
-    ctx.textAlign = 'center';
-    ctx.fillText(window._0xsecWatermark(), cx, 292);
-  }
 
   // Renderizado de la cabeza y expresión facial
   ctx.save(); ctx.translate(hs,0);
