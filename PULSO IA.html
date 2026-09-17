@@ -1,9 +1,18 @@
-<!--
+import os
+
+commented_html = """<!--
 ========================================================================================
-  PULSO · STARK MOTION LAB & IA
+  PULSO · STARK MOTION LAB & IA (SISTEMA DE TELEMETRÍA CORPORAL E IA SIMULTÁNEA)
   HECHO POR: JOSTIN JOSUE
-  PROYECTO: SISTEMA DE TELEMETRÍA DE MOVIMIENTO CORPORAL E IA SIMULTÁNEA 0MS
   COPYRIGHT © 2026 JOSTIN JOSUE - TODOS LOS DERECHOS RESERVADOS
+========================================================================================
+  DESCRIPCIÓN TÉCNICA DEL PROYECTO:
+  - Motor de Visión Artificial: MediaPipe Pose (Modelo BlazePose de 33 Puntos Clave)
+  - Suavizado de Sensores: Filtro de Paso Bajo Exponencial (EMA alpha = 0.28) + Histéresis
+  - Generación de Voz IA: Motor Local Instantáneo 0ms (Plantillas Dinámicas) + IA Nube
+  - Motor de Audio: Web Speech API (SpeechSynthesis) con Desbloqueo de Autoplay
+  - Interfaz Gráfica: Stark Cyberpunk Glassmorphism con Canvas 2D en Vivo y Teclado 3D
+  - Protección de Integridad: Motor Anti-Manipulación DOM con Cifrado XOR + Base64
 ========================================================================================
 -->
 <!DOCTYPE html>
@@ -12,30 +21,40 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>PULSO STARK LAB · Hecho por Jostin Josue</title>
+
+<!-- IMPORTACIÓN DE FUENTES TIPOGRÁFICAS (Google Fonts: Space Grotesk, Inter, JetBrains Mono) -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
 <style>
+  /* ========================================================================
+     1) VARIABLES GLOBALES CSS (:root) - PALETA DE COLORES CYBERPUNK STARK
+     ======================================================================== */
   :root{
-    --ink:#040711;
-    --panel:rgba(12,18,30,0.82);
-    --panel2:rgba(18,27,45,0.9);
-    --line:rgba(94,235,209,0.16);
-    --line2:rgba(0,242,254,0.32);
-    --mint:#5eebd1;
-    --mint-glow:rgba(94,235,209,0.5);
-    --cyan:#00f2fe;
-    --cyan-glow:rgba(0,242,254,0.5);
-    --coral:#ff6b5b;
-    --amber:#ffb648;
-    --purple:#a78bfa;
-    --text:#f8fafc;
-    --dim:#94a3b8;
-    --faint:#475569;
-    --radius:16px;
-    --radius-sm:10px;
+    --ink:#040711;                         /* Fondo ultra oscuro estilo Stark Studio */
+    --panel:rgba(12,18,30,0.82);           /* Cristal traslúcido para paneles Glassmorphism */
+    --panel2:rgba(18,27,45,0.9);           /* Superficie secundaria de contraste */
+    --line:rgba(94,235,209,0.16);          /* Líneas de borde de neón cian tenue */
+    --line2:rgba(0,242,254,0.32);         /* Líneas avanzadas de enfoque */
+    --mint:#5eebd1;                        /* Color verde mente holográfico principal */
+    --mint-glow:rgba(94,235,209,0.5);      /* Resplandor verde mente */
+    --cyan:#00f2fe;                        /* Azul cian Stark de alta energía */
+    --cyan-glow:rgba(0,242,254,0.5);       /* Resplandor cian */
+    --coral:#ff6b5b;                       /* Coral de alerta para hombros y rec badge */
+    --amber:#ffb648;                       /* Ámbar cálido para cadera y advertencias */
+    --purple:#a78bfa;                      /* Púrpura Stark para manos y ecualizador */
+    --text:#f8fafc;                        /* Texto principal de alto contraste */
+    --dim:#94a3b8;                         /* Texto secundario atenuado */
+    --faint:#475569;                       /* Texto de fondo o deshabilitado */
+    --radius:16px;                         /* Radio de bordes curvos principales */
+    --radius-sm:10px;                      /* Radio de botones y elementos pequeños */
     font-size:15px;
   }
+
+  /* RESET GENERAL DE MÁRGENES Y BOX SIZING */
   *{box-sizing:border-box;margin:0;padding:0;}
+
+  /* ESTILO GLOBAL DEL BODY: FONDO CYBERPUNK CON RETÍCULA RADIAL ANIMADA */
   html,body{
     background:var(--ink);
     background-image: 
@@ -50,12 +69,16 @@
     overflow-x:hidden;
   }
   ::selection{background:rgba(94,235,209,0.3);color:#fff;}
+
+  /* SCROLLBAR PERSONALIZADO ESTILO NEÓN */
   ::-webkit-scrollbar{width:8px;height:8px;}
   ::-webkit-scrollbar-track{background:rgba(4,7,17,0.8);}
   ::-webkit-scrollbar-thumb{background:linear-gradient(180deg, var(--mint), var(--cyan));border-radius:8px;}
   ::-webkit-scrollbar-thumb:hover{box-shadow:0 0 12px var(--cyan-glow);}
 
-  /* ===== HEADER ===== */
+  /* ========================================================================
+     2) BARRA SUPERIOR (HEADER) - TÍTULO, SELECTOR DE MODO Y MARCA DE AGUA
+     ======================================================================== */
   header{
     display:flex;
     align-items:center;
@@ -69,6 +92,8 @@
     box-shadow:0 6px 30px rgba(0,0,0,0.7), 0 1px 0 rgba(94,235,209,0.1);
   }
   #brand{display:flex;align-items:center;gap:14px;}
+  
+  /* PUNTO LUMINOSO ANIMADO DE LOGOTIPO */
   #pulseDot{
     width:14px;
     height:14px;
@@ -86,6 +111,7 @@
     animation:pulseDot 1.8s ease-out infinite;
   }
   @keyframes pulseDot{0%{transform:scale(1);opacity:1;}100%{transform:scale(2.4);opacity:0;}}
+
   #brandText h1{
     font-family:'Space Grotesk',sans-serif;
     font-size:21px;
@@ -99,6 +125,7 @@
   }
   #brandText p{font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:0.18em;margin-top:3px;font-family:'JetBrains Mono',monospace;}
 
+  /* BOTONES DE SELECTOR DE MODO (TECLADO / CÁMARA / AMBOS) */
   #modeBar{display:flex;gap:5px;background:var(--panel2);border:1px solid var(--line);border-radius:30px;padding:4px;box-shadow:inset 0 2px 10px rgba(0,0,0,0.5);}
   .mBtn{
     padding:8px 20px;
@@ -122,6 +149,7 @@
     border-color:rgba(255,255,255,0.4);
   }
 
+  /* INDICADOR PILL DE ESTADO GENERAL DE ACTIVIDAD */
   #pill{
     display:flex;
     align-items:center;
@@ -140,6 +168,7 @@
   #pill.active .dotSt{background:var(--mint);box-shadow:0 0 12px var(--mint), 0 0 24px var(--cyan);}
   #pill.active{border-color:rgba(94,235,209,0.5);color:var(--text);background:rgba(94,235,209,0.12);box-shadow:0 0 20px rgba(94,235,209,0.15);}
 
+  /* BADGE DE AUTOR EN LA CABECERA (HECHO POR JOSTIN JOSUE) */
   #authorBadge {
     display:flex;
     align-items:center;
@@ -155,6 +184,7 @@
   #authorBadge .authLabel { color: var(--dim); font-size: 9.5px; letter-spacing: 0.14em; text-transform: uppercase; }
   #authorBadge .authName { color: var(--cyan); font-weight: 800; letter-spacing: 0.08em; text-shadow: 0 0 10px var(--cyan); }
 
+  /* MARCA DE AGUA SOBRE EL ESCÁNER DE LUZ */
   .scanWatermark {
     position: absolute;
     bottom: 8px;
@@ -168,7 +198,9 @@
     pointer-events: none;
   }
 
-  /* ===== LAYOUT ===== */
+  /* ========================================================================
+     3) LAYOUT PRINCIPAL Y PANELES GLASSMORPHISM DE 3 COLUMNAS
+     ======================================================================== */
   #main{
     display:grid;
     grid-template-columns:270px 1fr 320px;
@@ -217,7 +249,7 @@
   }
   .eyebrow::after{content:'';flex:1;height:1px;background:linear-gradient(90deg, var(--line), transparent);}
 
-  /* corner frame */
+  /* MARCO DE ESQUINAS HOLOGRÁFICAS ESTILO STARK LAB (.tl, .tr, .bl, .br) */
   .frame{position:relative;}
   .frame > i{position:absolute;width:16px;height:16px;border:2px solid var(--mint);opacity:.75;pointer-events:none;z-index:4;transition:all .3s ease;}
   .frame > i.tl{top:10px;left:10px;border-right:none;border-bottom:none;border-radius:4px 0 0 0;}
@@ -226,7 +258,9 @@
   .frame > i.br{bottom:10px;right:10px;border-left:none;border-top:none;border-radius:0 0 4px 0;}
   .panel:hover .frame > i{opacity:1;border-color:var(--cyan);box-shadow:0 0 10px var(--cyan-glow);}
 
-  /* ===== LEFT — escena/muñeco ===== */
+  /* ========================================================================
+     4) PANEL IZQUIERDO - ESCANER HOLOGRÁFICO Y AVATAR CANVAS 2D
+     ======================================================================== */
   #left{align-items:center;gap:10px;padding-bottom:20px;}
   #scanWrap{position:relative;width:100%;flex:1;display:flex;align-items:center;justify-content:center;margin-top:12px;z-index:2;}
   #scanBg{
@@ -275,10 +309,13 @@
     box-shadow:0 0 12px rgba(94,235,209,0.1);
   }
 
-  /* ===== CENTER ===== */
+  /* ========================================================================
+     5) PANEL CENTRAL - VISTA DE CÁMARA COMPLETA, TECLADO 3D Y LEYENDA
+     ======================================================================== */
   #center{display:flex;flex-direction:column;gap:16px;overflow-y:auto;padding-bottom:4px;z-index:2;}
 
   #camPanel{padding:16px;}
+  /* CONTENEDOR DE CÁMARA SIN RECORTE (object-fit: contain; aspect-ratio: 16/9) */
   #videoWrap{
     position:relative;
     width:100%;
@@ -297,8 +334,8 @@
     width:100%;
     height:100%;
     display:block;
-    object-fit:contain;
-    transform:scaleX(-1);
+    object-fit:contain;                  /* Muestra el cuerpo entero sin recortar arriba/abajo */
+    transform:scaleX(-1);                 /* Efecto espejo natural */
     background:#000;
   }
   #camCanvas{
@@ -351,7 +388,7 @@
   #startBtn:hover{background:linear-gradient(135deg, var(--mint), var(--cyan));color:#03120e;box-shadow:0 0 30px var(--mint-glow);transform:translateY(-1px);}
   #camStatus{text-align:center;font-size:12px;color:var(--dim);min-height:20px;margin-top:10px;font-family:'JetBrains Mono',monospace;}
 
-  /* teclado */
+  /* TECLADO VIRTUAL DE CONTROL INTERACTIVO 3D */
   #kbPanel{padding:18px 14px 20px;}
   #keyboard{display:flex;flex-direction:column;gap:7px;align-items:center;margin-top:14px;}
   .krow{display:flex;gap:7px;}
@@ -388,7 +425,7 @@
     box-shadow:0 0 22px var(--mint), 0 0 35px var(--cyan);
   }
 
-  /* leyenda */
+  /* LEYENDA Y MAPA DE TECLAS CORPORALES */
   #legendPanel{padding:18px 18px 20px;}
   #legend{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:14px;}
   .leg{
@@ -407,7 +444,9 @@
   .dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;box-shadow:0 0 10px currentColor;}
   .leg b{color:var(--text);font-weight:700;font-family:'JetBrains Mono',monospace;font-size:11px;min-width:38px;}
 
-  /* ===== RIGHT — telemetría + voz ===== */
+  /* ========================================================================
+     6) PANEL DERECHO - TELEMETRÍA DE PARTES, MOTOR DE VOZ IA Y SUBTÍTULOS
+     ======================================================================== */
   #right{padding-bottom:18px;gap:14px;overflow-y:auto;z-index:2;}
   #partCards{display:flex;flex-direction:column;gap:7px;padding:14px 18px 0;}
   .pc{
@@ -461,6 +500,7 @@
     box-shadow:inset 0 0 15px rgba(0,0,0,0.4);
   }
 
+  /* ECUALIZADOR ANIMADO Y CONTROLADOR DE NARRACIÓN */
   #voiceBox{
     margin:8px 18px 0;
     padding:16px;
@@ -483,6 +523,7 @@
   #eq span:nth-child(4){animation-delay:.08s;}
   @keyframes eqbar{0%,100%{height:4px;}50%{height:18px;}}
 
+  /* INTERRUPTOR SWITCH FLOTANTE */
   .switch{position:relative;width:42px;height:24px;flex-shrink:0;}
   .switch input{opacity:0;width:0;height:0;position:absolute;}
   .slider{position:absolute;inset:0;background:var(--ink);border:1px solid var(--line2);border-radius:24px;cursor:pointer;transition:.25s;}
@@ -522,6 +563,7 @@
   }
   #testVoiceBtn:hover{background:var(--mint);color:#03120e;box-shadow:0 0 18px var(--mint-glow);transform:translateY(-1px);}
 
+  /* BANNER PRINCIPAL DE SUBTÍTULOS Y HISTORIAL DE NARRACIONES */
   #captionMain{
     font-size:13px;
     color:var(--text);
@@ -538,8 +580,10 @@
   #captionHistory{display:flex;flex-direction:column;gap:6px;font-size:11px;color:var(--dim);border-top:1px dashed var(--line);padding-top:12px;margin-top:4px;font-family:'JetBrains Mono',monospace;}
   #captionHistory div{opacity:.8;padding-left:4px;}
 
+  /* FOOTER Y DERECHOS DE AUTOR DE JOSTIN JOSUE */
   footer{padding:10px 28px 16px;text-align:center;font-size:11px;color:var(--faint);font-family:'JetBrains Mono',monospace;letter-spacing:.08em;}
 
+  /* RESPONSIVE DESIGN PARA PANTALLAS PEQUEÑAS Y MÓVILES */
   @media (max-width: 880px){
     #main{grid-template-columns:1fr;grid-template-rows:auto;height:auto;}
     #left{min-height:380px;}
@@ -548,6 +592,7 @@
 </head>
 <body>
 
+<!-- BARRA SUPERIOR DE LA APLICACIÓN -->
 <header>
   <div id="brand">
     <div id="pulseDot"></div>
@@ -556,21 +601,28 @@
       <p>Telemetría de Movimiento e IA Simultánea</p>
     </div>
   </div>
+  
+  <!-- BADGE DE AUTOR: JOSTIN JOSUE -->
   <div id="authorBadge">
     <span class="authLabel">HECHO POR</span>
     <span class="authName">JOSTIN JOSUE</span>
   </div>
+
+  <!-- BARRA DE SELECCIÓN DE MODO -->
   <div id="modeBar">
     <button class="mBtn on" id="btnTeclado">⌨ Teclado</button>
     <button class="mBtn" id="btnCamara">📷 Cámara</button>
     <button class="mBtn" id="btnAmbos">⚡ Ambos</button>
   </div>
+
+  <!-- INDICADOR PILL DE ACTIVIDAD EN TIEMPO REAL -->
   <div id="pill"><span class="dotSt"></span><span id="pillText">Sin actividad</span></div>
 </header>
 
+<!-- CONTENEDOR PRINCIPAL DE 3 COLUMNAS -->
 <div id="main">
 
-  <!-- IZQUIERDA: escena / muñeco -->
+  <!-- IZQUIERDA: ESCANER DE AVATAR EN VIVO -->
   <div class="panel" id="left">
     <div class="eyebrow">Análisis en vivo</div>
     <div id="scanWrap" class="frame">
@@ -583,7 +635,7 @@
     <div id="figSub"></div>
   </div>
 
-  <!-- CENTRO: cámara + teclado + leyenda -->
+  <!-- CENTRO: CÁMARA, TECLADO VIRTUAL Y MAPA DE LEYENDA -->
   <div id="center">
     <div class="panel frame" id="camPanel">
       <i class="tl"></i><i class="tr"></i><i class="bl"></i><i class="br"></i>
@@ -607,7 +659,7 @@
     </div>
   </div>
 
-  <!-- DERECHA: telemetría + voz -->
+  <!-- DERECHA: TELEMETRÍA CORPORAL, VOZ IA Y CONFIGURACIÓN -->
   <div class="panel" id="right">
     <div class="eyebrow">Telemetría</div>
     <div id="partCards"></div>
@@ -638,17 +690,28 @@
   </div>
 
 </div>
+
+<!-- PIE DE PÁGINA DE CRÉDITOS E IDENTIDAD -->
 <footer>SISTEMA STARK MOTION LAB · HECHO POR JOSTIN JOSUE · MODELO BLAZEPOSE (33 PUNTOS) · MOTOR IA SIMULTÁNEO DE 0ms LATENCIA</footer>
 
+<!-- SCRIPTS EXTERNOS DE MEDIAPIPE (DETECCIÓN CORPORAL MEDIANTE IA) -->
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose@0.5.1675469404/pose.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils@0.3.1675466862/camera_utils.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils@0.3.1675466124/drawing_utils.js"></script>
+
 <script>
 /* ========================================================================
    STARK LAB ANTI-TAMPER SECURITY ENGINE & OBFUSCATED WATERMARK
    PROTECCIÓN DE INTEGRIDAD © 2026 JOSTIN JOSUE
+   ========================================================================
+   Explicación Técnica: Este módulo autónomo protege las marcas de agua de
+   la interfaz (Header Badge, Scan Watermark y Footer) utilizando cifrado
+   XOR con Base64 y un observador de mutación (MutationObserver). Si alguien
+   intenta borrar o alterar los elementos DOM mediante F12 o CSS, el sistema
+   reconstruye automáticamente la marca de agua original de Jostin Josue.
    ======================================================================== */
 (function() {
+  // Función de desencriptado XOR + Base64
   function _0xsec(b64) {
     var raw = window.atob(b64);
     var out = '';
@@ -658,6 +721,7 @@
     return out;
   }
 
+  // Cadenas cifradas Base64 de la marca de agua de JOSTIN JOSUE
   var _0xLBL = 'Ag8JAgVqGgUY';
   var _0xNAM = 'AAUZHgMEagAFGR8P';
   var _0xAUT = 'Ag8JAgVqGgUYagAFGR4DBGoABRkfDw==';
@@ -665,8 +729,9 @@
 
   window._0xsecWatermark = function() { return _0xsec(_0xAUT); };
 
+  // Guardián de integridad DOM
   function _0xguard() {
-    // 1. Author badge header
+    // 1. Validar y restaurar el badge del encabezado
     var badge = document.getElementById('authorBadge');
     if (!badge) {
       badge = document.createElement('div');
@@ -685,7 +750,7 @@
       }
     }
 
-    // 2. Scan Watermark Element
+    // 2. Validar y restaurar la marca sobre el escáner del canvas
     var scanMark = document.querySelector('.scanWatermark');
     if (!scanMark) {
       var wrap = document.getElementById('scanWrap');
@@ -704,7 +769,7 @@
       }
     }
 
-    // 3. Footer Element
+    // 3. Validar y restaurar el pie de página (Footer)
     var footer = document.querySelector('footer');
     if (!footer) {
       footer = document.createElement('footer');
@@ -720,13 +785,14 @@
     }
   }
 
+  // Ejecución inicial en carga
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', _0xguard);
   } else {
     _0xguard();
   }
 
-  // MutationObserver to catch inspect element or script deletion attempts instantly
+  // Observador de mutación para capturar intentos de inspección de elemento en tiempo real
   try {
     var observer = new MutationObserver(function() {
       _0xguard();
@@ -739,11 +805,22 @@
     });
   } catch(e) {}
 
-  // Continuous background integrity heartbeat (every 500ms)
+  // Verificación de pulso cada 500ms
   setInterval(_0xguard, 500);
 })();
 
 console.log("%c PULSO IA · HECHO POR JOSTIN JOSUE ", "background: #040711; color: #00f2fe; font-size: 16px; font-weight: bold; border: 1px solid #00f2fe; padding: 4px 8px; border-radius: 4px;");
+
+// ========================================================================
+// 1) DEFINICIÓN Y CONFIGURACIÓN DE PARTES CORPORALES (MATRIZ TELEMÉTRICA)
+// ========================================================================
+// Cada objeto mapea:
+// - id: Identificador único interno.
+// - label: Nombre legible para la interfaz gráfica.
+// - voice: Término articulado en español para el sintetizador de voz.
+// - color: Hexadecimal de color neón distintivo.
+// - keys: Teclas asignadas en el teclado físico.
+// - camIdx: Índices de los puntos clave (Landmarks) de MediaPipe BlazePose (33 puntos).
 const PARTS = [
   { id:'cabeza',  label:'Cabeza',       voice:'la cabeza',              color:'#5eebd1', keys:['q','w'],           camIdx:[0,1,2,3,4,5,6,7,8,9,10] },
   { id:'hom_izq', label:'Hombro izq.',  voice:'el hombro izquierdo',    color:'#ff8a5b', keys:['a'],               camIdx:[11,13] },
@@ -759,6 +836,7 @@ const PARTS = [
   { id:'ro_der',  label:'Pie der.',     voice:'el pie derecho',         color:'#94a3b8', keys:['arrowup','m'],    camIdx:[30,32] },
 ];
 
+// MATRIZ DE TECLAS DE CONTROL VISUAL
 const KEY_ROWS = [
   ['Q','W','E','R','T','Y','U','I','O','P'],
   ['A','S','D','F','G','H','J','K','L'],
@@ -767,6 +845,11 @@ const KEY_ROWS = [
 ];
 const keyNorm = k => k==='Esp'?' ':k==='←'?'arrowleft':k==='→'?'arrowright':k==='↑'?'arrowup':k==='↓'?'arrowdown':k.toLowerCase();
 
+// ========================================================================
+// 2) GENERACIÓN DINÁMICA DE ELEMENTOS DE INTERFAZ (TECLADO Y TELEMETRÍA)
+// ========================================================================
+
+// A) Construcción de filas de teclado 3D
 const keyEls = {};
 const kbEl = document.getElementById('keyboard');
 KEY_ROWS.forEach(row => {
@@ -781,6 +864,7 @@ KEY_ROWS.forEach(row => {
   kbEl.appendChild(rowDiv);
 });
 
+// B) Construcción de leyenda del mapa de teclas
 const legEl = document.getElementById('legend');
 PARTS.forEach(p => {
   const d = document.createElement('div'); d.className='leg';
@@ -789,6 +873,7 @@ PARTS.forEach(p => {
   legEl.appendChild(d);
 });
 
+// C) Construcción de tarjetas de telemetría dinámica de partes
 const pcWrap = document.getElementById('partCards');
 PARTS.forEach(p => {
   const d = document.createElement('div'); d.className='pc'; d.id='pc-'+p.id;
@@ -796,6 +881,7 @@ PARTS.forEach(p => {
   pcWrap.appendChild(d);
 });
 
+// VARIABLES GLOBALES DE ESTADO DE CONTROL
 let mode = 'teclado';
 let keyActive = new Set();
 let camActive = new Set();
@@ -807,12 +893,14 @@ const fig = document.getElementById('fig');
 const ctx = fig.getContext('2d');
 const W=190, H=300, cx=W/2;
 
+// Evaluación de estado activo según el modo seleccionado (Teclado / Cámara / Ambos)
 function isOn(p) {
   if (mode==='teclado') return p.keys.some(k=>keyActive.has(k));
   if (mode==='camara')  return camActive.has(p.id);
   return p.keys.some(k=>keyActive.has(k)) || camActive.has(p.id);
 }
 
+// FUNCIONES TRIGONOMÉTRICAS PARA ANIMACIÓN KINEMÁTICA DEL AVATAR
 function wave(speed) { return Math.sin(t*speed)*28; }
 function shake()     { return Math.sin(t*0.015)*5; }
 function bounce()    { return Math.abs(Math.sin(t*0.012))*8; }
@@ -820,6 +908,9 @@ function dot(x,y,r,c,glow) { ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2); ctx.fi
 function seg(x1,y1,x2,y2,c,w,glow) { ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.strokeStyle=c; ctx.lineWidth=w||3; if(glow){ctx.shadowColor=c;ctx.shadowBlur=10;} ctx.stroke(); ctx.shadowBlur=0; }
 function rot(ox,oy,ang,len) { const r=ang*Math.PI/180; return {x:ox+Math.sin(r)*len,y:oy+Math.cos(r)*len}; }
 
+// ========================================================================
+// 3) MOTOR VISUAL Y RENDERIZADOR DEL AVATAR STARK (CANVAS 2D A 60 FPS)
+// ========================================================================
 function draw() {
   t++;
   ctx.clearRect(0,0,W,H);
@@ -836,11 +927,13 @@ function draw() {
   const hipY  = 235-hb, shouldY=hipY-58, neckY=shouldY-8, headY=neckY-20;
   const BC='#334155', JC='#5eebd1', SK='#ffb648';
 
-  // Línea holográfica de suelo
+  // Renderizado de suelo holográfico reticular
   ctx.beginPath(); ctx.moveTo(cx-50, 275); ctx.lineTo(cx+50, 275);
   ctx.strokeStyle = 'rgba(94, 235, 209, 0.3)'; ctx.lineWidth = 1.5; ctx.stroke();
   ctx.beginPath(); ctx.arc(cx, 275, 40, 0, Math.PI);
   ctx.strokeStyle = 'rgba(94, 235, 209, 0.15)'; ctx.stroke();
+  
+  // Renderizado inalterable de marca de agua sobre el Canvas
   if (window._0xsecWatermark) {
     ctx.font = '9px JetBrains Mono, monospace';
     ctx.fillStyle = 'rgba(0, 242, 254, 0.45)';
@@ -848,7 +941,7 @@ function draw() {
     ctx.fillText(window._0xsecWatermark(), cx, 292);
   }
 
-  // cabeza
+  // Renderizado de la cabeza y expresión facial
   ctx.save(); ctx.translate(hs,0);
   ctx.beginPath(); ctx.arc(cx,headY,19,0,Math.PI*2);
   ctx.fillStyle=SK; if(onHead){ctx.shadowColor=head.color;ctx.shadowBlur=16;} ctx.fill(); ctx.shadowBlur=0;
@@ -859,11 +952,11 @@ function draw() {
   ctx.strokeStyle=onHead?head.color:'#1a1f29'; ctx.lineWidth=1.5; ctx.stroke();
   ctx.restore();
 
-  // torso
+  // Renderizado de columna y torso
   seg(cx,neckY,cx,shouldY,BC,2);
   seg(cx,shouldY,cx,hipY,BC,3.5);
 
-  // brazos
+  // Kinemática y rotación de articulaciones de brazos
   const aI = onHI ? wave(0.009)-30 : -12;
   const aD = onHD ? -wave(0.009)+30 : 12;
   const eI = rot(cx-13,shouldY,aI,33);
@@ -887,11 +980,11 @@ function draw() {
   dot(wI.x,wI.y,3,JC); dot(wD.x,wD.y,3,JC);
   dot(hhI.x,hhI.y,5,SK,onMI); dot(hhD.x,hhD.y,5,SK,onMD);
 
-  // cadera
+  // Renderizado de pelvis y cadera
   seg(cx-11,hipY,cx+11,hipY, onCad?cad.color:BC, 4.5, onCad);
   dot(cx,hipY,5,JC);
 
-  // piernas
+  // Kinemática y rotación de piernas y pies
   const pI_a = onPI ? wave(0.009)-15 : -6;
   const pD_a = onPD ? -wave(0.009)+15 : 6;
   const kI = rot(cx-10,hipY,pI_a,40);
@@ -917,7 +1010,9 @@ function draw() {
   requestAnimationFrame(draw);
 }
 
-/* ===================== VOZ Y SÍNTESIS DE AUDIO ===================== */
+// ========================================================================
+// 4) MOTOR DE SÍNTESIS DE VOZ Y COLA DE AUDIO (WEB SPEECH API)
+// ========================================================================
 const synthAvailable = 'speechSynthesis' in window;
 let voiceEnabled = true;
 let voiceRate = 1.2;
@@ -933,7 +1028,7 @@ const captionMain = document.getElementById('captionMain');
 const captionHistory = document.getElementById('captionHistory');
 const voiceBox = document.getElementById('voiceBox');
 
-// Desbloqueo de política de reproducción de audio por interacción de usuario
+// Función de desbloqueo de política Autoplay del navegador por gesto del usuario
 let audioUnlocked = false;
 function unlockAudioEngine() {
   if (audioUnlocked || !synthAvailable) return;
@@ -948,6 +1043,7 @@ function unlockAudioEngine() {
 document.addEventListener('click', unlockAudioEngine);
 document.addEventListener('keydown', unlockAudioEngine);
 
+// Carga y filtro de voces en español disponibles en el sistema operativo
 function populateVoices() {
   if (!synthAvailable) { voiceSelect.innerHTML='<option>No disponible</option>'; voiceSelect.disabled=true; return; }
   const allVoices = speechSynthesis.getVoices();
@@ -986,6 +1082,7 @@ voiceToggle.addEventListener('change', () => {
 
 voiceRateSel.addEventListener('change', () => { voiceRate = parseFloat(voiceRateSel.value); });
 
+// Función segura de reproducción con retardo controlado (30ms) para prevenir truncado de voz
 function safeSpeak(text, onStartCallback, onEndCallback) {
   if (!synthAvailable || !voiceEnabled) return;
   try {
@@ -1029,6 +1126,7 @@ function safeSpeak(text, onStartCallback, onEndCallback) {
   }
 }
 
+// Botón de prueba de sintetización de voz
 testVoiceBtn.addEventListener('click', () => {
   unlockAudioEngine();
   const text = 'Hola, soy la inteligencia artificial del sistema PULSO Lab. Estoy lista para analizar tu movimiento.';
@@ -1036,6 +1134,7 @@ testVoiceBtn.addEventListener('click', () => {
   safeSpeak(text);
 });
 
+// Actualizador de subtítulos e historial de narraciones
 function showCaption(text) {
   captionMain.classList.remove('empty');
   captionMain.textContent = text;
@@ -1045,9 +1144,9 @@ function showCaption(text) {
   while (captionHistory.children.length > 3) captionHistory.removeChild(captionHistory.lastChild);
 }
 
-// -------------------------------------------------------------
-// SISTEMA DE IA DUAL: INSTANTÁNEA (0ms) Y NUBE (OPENROUTER)
-// -------------------------------------------------------------
+// ========================================================================
+// 5) MOTOR IA DUAL: GENERADOR INSTANTÁNEO (0ms) Y CONEXIÓN A LA NUBE
+// ========================================================================
 const OPENROUTER_API_KEY = localStorage.getItem('OPENROUTER_API_KEY') || ''; // Ingrese su clave de OpenRouter si desea usar IA Nube 
 
 const aiEngineSelect = document.getElementById('aiEngineSelect');
@@ -1057,6 +1156,7 @@ let lastGroupSpeakAt = 0;
 let lastSpokenGroupKey = "";
 const GROUP_SPEAK_COOLDOWN = 1500;
 
+// Plantillas de respuesta local sin latencia para 1 sola parte corporal
 const LOCAL_AI_SINGLE_TEMPLATES = [
   p => `Como IA de PULSO Lab, detecto movimiento en ${p}.`,
   p => `Análisis IA en tiempo real: registrando acción en ${p}.`,
@@ -1064,6 +1164,7 @@ const LOCAL_AI_SINGLE_TEMPLATES = [
   p => `Detección instantánea por IA: movimiento registrado en ${p}.`,
 ];
 
+// Plantillas de respuesta local sin latencia para múltiples partes simultáneas
 const LOCAL_AI_MULTI_TEMPLATES = [
   p => `Como IA de PULSO Lab, detecto movimiento simultáneo en ${p}.`,
   p => `Análisis IA multizona: registrando movimiento conjunto en ${p}.`,
@@ -1071,6 +1172,7 @@ const LOCAL_AI_MULTI_TEMPLATES = [
   p => `Detección instantánea por IA: movimiento simultáneo registrado en ${p}.`,
 ];
 
+// Generador de respuestas locales 0ms
 function generateInstantAIText(parts) {
   const partsText = formatPartsList(parts);
   if (parts.length === 1) {
@@ -1082,6 +1184,7 @@ function generateInstantAIText(parts) {
   }
 }
 
+// Formateador gramatical de lista de partes en español (ej. "la cabeza, el hombro izquierdo y la pierna derecha")
 function formatPartsList(parts) {
   if (parts.length === 0) return '';
   if (parts.length === 1) return parts[0].voice;
@@ -1090,6 +1193,7 @@ function formatPartsList(parts) {
   return voices.join(', ') + ' y ' + last;
 }
 
+// Coordinador de narración de partes activas simultáneas
 async function speakPartsGroup(activeParts) {
   if (!voiceEnabled || !synthAvailable || activeParts.length === 0) return;
 
@@ -1109,14 +1213,14 @@ async function speakPartsGroup(activeParts) {
   const useLocal = !aiEngineSelect || aiEngineSelect.value === 'local';
 
   if (useLocal) {
-    // ===== MODO 0ms LATENCIA (LOCAL INSTANTÁNEO) =====
+    // Modo local instantáneo 0ms
     const aiText = generateInstantAIText(activeParts);
     showCaption(aiText);
     safeSpeak(aiText);
     return;
   }
 
-  // ===== MODO NUBE (OPENROUTER API) =====
+  // Modo Nube (Consulta a API externa)
   if (pendingCount >= MAX_QUEUE) return;
   pendingCount++;
 
@@ -1160,18 +1264,18 @@ async function speakPartsGroup(activeParts) {
     console.error("Error OpenRouter API:", error);
     pendingCount = Math.max(0, pendingCount - 1);
     
-    // Fallback instantáneo si la API externa falla o responde lento
+    // Fallback instantáneo automático si falla la conexión externa
     const fallbackText = generateInstantAIText(activeParts);
     showCaption(fallbackText);
     safeSpeak(fallbackText);
   }
 }
 
-// -------------------------------------------------------------
-
+// ========================================================================
+// 6) SINCRONIZACIÓN DE INTERFAZ DE USUARIO (UPDATE UI)
+// ========================================================================
 let prevActiveKeysString = "";
 
-/* ===================== UI ===================== */
 function updateUI() {
   const activeParts = [];
   PARTS.forEach(p => {
@@ -1185,12 +1289,13 @@ function updateUI() {
 
   const activeKeysString = activeParts.map(p => p.id).sort().join(',');
 
+  // Ventana de agrupación rápida de 40ms para capturar movimiento simultáneo
   if (activeKeysString !== prevActiveKeysString) {
     if (movementTimer) clearTimeout(movementTimer);
     if (activeParts.length > 0) {
       movementTimer = setTimeout(() => {
         speakPartsGroup(activeParts);
-      }, 40); // 40ms: captura ultrarrápida sin latencia perceptible
+      }, 40); 
     }
     prevActiveKeysString = activeKeysString;
   }
@@ -1216,7 +1321,9 @@ function updateUI() {
   }
 }
 
-// Teclado
+// ========================================================================
+// 7) CONTROLADORES DE EVENTOS DE TECLADO (KEYDOWN / KEYUP)
+// ========================================================================
 function partColor(k) { return PARTS.find(p=>p.keys.includes(k))?.color||'#5eebd1'; }
 
 document.addEventListener('keydown', e => {
@@ -1239,17 +1346,19 @@ document.addEventListener('keyup', e => {
   }
 });
 
-// Cámara - Motor de Detección Suavizado con Filtro de Paso Bajo (EMA) e Histéresis
+// ========================================================================
+// 8) MOTOR DE DETECCIÓN POR CÁMARA (MEDIAPIPE POSE + FILTRO EMA + HISTÉRESIS)
+// ========================================================================
 let smoothLM = null;
 const activeFrameCounters = {};
 const inactiveFrameCounters = {};
 const activeStateMap = {};
 
-// Umbrales de movimiento adaptativos por parte (puerta de ruido anti-parpadeo de alta precisión)
+// Umbrales adaptativos de movimiento (Puerta de ruido anti-parpadeo)
 const PART_THRESHOLDS = {
-  'cabeza':  0.022, // Sensibilidad calibrada para detectar giros, inclinaciones y asentimientos de cabeza
-  'hom_izq': 0.022, // Calibrado para encogimientos y rotaciones de hombro izq.
-  'hom_der': 0.022, // Calibrado para encogimientos y rotaciones de hombro der.
+  'cabeza':  0.022, // Sensibilidad optimizada para giros e inclinaciones de cabeza
+  'hom_izq': 0.022, // Sensibilidad optimizada para hombro izquierdo
+  'hom_der': 0.022, // Sensibilidad optimizada para hombro derecho
   'br_izq':  0.026,
   'br_der':  0.026,
   'mn_izq':  0.026,
@@ -1261,6 +1370,7 @@ const PART_THRESHOLDS = {
   'ro_der':  0.026,
 };
 
+// Procesador de fotogramas de video e inferencia de coordenadas
 function onResults(results) {
   const vc = document.getElementById('camCanvas');
   const vv = document.getElementById('video');
@@ -1278,22 +1388,23 @@ function onResults(results) {
 
   const lm = results.poseLandmarks;
 
-  // Dibujar esqueletos y articulaciones en la pantalla de la cámara
+  // Dibujar sobreposición de esqueleto y articulaciones en vivo
   if (window.drawConnectors) drawConnectors(c2, lm, POSE_CONNECTIONS, { color: '#5eebd1', lineWidth: 2 });
   if (window.drawLandmarks) drawLandmarks(c2, lm, { color: '#ff8a5b', lineWidth: 1, radius: 3 });
 
-  // Filtro de Suavizado Exponencial de Puntos (Elimina el ruido digital del sensor)
+  // APLICACIÓN DEL FILTRO DE PASO BAJO EXPONENCIAL (EMA: Exponential Moving Average)
   if (!smoothLM) {
     smoothLM = lm.map(p => ({ x: p.x, y: p.y }));
     return;
   }
 
-  const alpha = 0.28; // Factor de respuesta (28% lectura nueva, 72% memoria)
+  const alpha = 0.28; // Factor de respuesta (28% datos nuevos, 72% memoria para eliminar ruido)
   const currentSmooth = lm.map((p, idx) => ({
     x: smoothLM[idx].x * (1 - alpha) + p.x * alpha,
     y: smoothLM[idx].y * (1 - alpha) + p.y * alpha,
   }));
 
+  // Cálculo de magnitud de movimiento euclidiana por cada zona corporal
   PARTS.forEach(p => {
     let mv = 0;
     p.camIdx.forEach(i => {
@@ -1310,7 +1421,7 @@ function onResults(results) {
 
     const minFrames = (p.id === 'cabeza' || p.id === 'hom_izq' || p.id === 'hom_der') ? 1 : 2;
 
-    // Validación por histéresis temporal
+    // Control de histéresis temporal (Previene parpadeo continuo y falsos disparos)
     if (mv > thresh) {
       activeFrameCounters[p.id]++;
       inactiveFrameCounters[p.id] = 0;
@@ -1333,7 +1444,7 @@ function onResults(results) {
   smoothLM = currentSmooth;
 }
 
-// Modos
+// CONTROL DE CAMBIO DE MODO INTERACTIVO (TECLADO / CÁMARA / AMBOS)
 const btnT=document.getElementById('btnTeclado');
 const btnC=document.getElementById('btnCamara');
 const btnA=document.getElementById('btnAmbos');
@@ -1353,13 +1464,14 @@ btnT.addEventListener('click',()=>setMode('teclado'));
 btnC.addEventListener('click',()=>setMode('camara'));
 btnA.addEventListener('click',()=>setMode('ambos'));
 
+// INICIALIZACIÓN DE CÁMARA Y MANEJO DE ERRORES DE DISPOSITIVO
 startBtn.addEventListener('click', async () => {
   startBtn.disabled = true;
   startBtn.textContent = 'Verificando cámara...';
   camStatus.textContent = 'Buscando dispositivos de video...';
 
   try {
-    // Verificación previa de dispositivos de video disponibles
+    // Pre-chequeo de dispositivos de hardware
     if (navigator.mediaDevices && navigator.mediaDevices.enumerateDevices) {
       const devices = await navigator.mediaDevices.enumerateDevices();
       const videoDevices = devices.filter(device => device.kind === 'videoinput');
@@ -1419,7 +1531,6 @@ startBtn.addEventListener('click', async () => {
     camStatus.textContent = userMsg;
     showCaption(userMsg);
 
-    // Permitir clic para cambiar automáticamente al modo Teclado
     startBtn.onclick = () => {
       setMode('teclado');
       startBtn.textContent = '▶ Iniciar cámara';
@@ -1428,6 +1539,7 @@ startBtn.addEventListener('click', async () => {
   }
 });
 
+// INICIO DEL BUCLE DE ANIMACIÓN
 draw();
 </script>
 </body>
